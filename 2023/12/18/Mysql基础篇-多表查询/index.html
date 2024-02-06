@@ -1,0 +1,405 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Mysql基础篇-多表查询 | Echin の 博客</title><meta name="author" content="Echin-h"><meta name="copyright" content="Echin-h"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="多表关系（类别） 一对多 案例： 部门与员工的关系 关系： 一个部门对应多个员工，一个员工对应多个部门 （员工是多，部门是一） 实现： 在多的一方建立外键，指向一的一方的主键   多对多 案例： 学生与课程的关系 关系： 一个学生可以选修多个课程，一门课程也能供多个学生选择 实现： 建立第三张中间表，中间表至少包含两个外键，分别关联两方主键  1234567-- 学生表create table s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql基础篇-多表查询">
+<meta property="og:url" content="http://example.com/2023/12/18/Mysql%E5%9F%BA%E7%A1%80%E7%AF%87-%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/index.html">
+<meta property="og:site_name" content="Echin の 博客">
+<meta property="og:description" content="多表关系（类别） 一对多 案例： 部门与员工的关系 关系： 一个部门对应多个员工，一个员工对应多个部门 （员工是多，部门是一） 实现： 在多的一方建立外键，指向一的一方的主键   多对多 案例： 学生与课程的关系 关系： 一个学生可以选修多个课程，一门课程也能供多个学生选择 实现： 建立第三张中间表，中间表至少包含两个外键，分别关联两方主键  1234567-- 学生表create table s">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg">
+<meta property="article:published_time" content="2023-12-18T12:26:46.000Z">
+<meta property="article:modified_time" content="2023-12-21T13:57:39.824Z">
+<meta property="article:author" content="Echin-h">
+<meta property="article:tag" content="Mysql">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg"><link rel="shortcut icon" href="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg"><link rel="canonical" href="http://example.com/2023/12/18/Mysql%E5%9F%BA%E7%A1%80%E7%AF%87-%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"TQQRJ72W3Y","apiKey":"691b279e3e99ecf664b63c47582168b7","indexName":"hexo","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Echin-h","link":"链接: ","source":"来源: Echin の 博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Mysql基础篇-多表查询',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-21 21:57:39'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.0.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/todo/"><i class="fa-fw fas fa-list-alt"></i><span> ToDo</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/contact/"><i class="fa-fw fas fa-comments"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Echin の 博客"><span class="site-name">Echin の 博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/todo/"><i class="fa-fw fas fa-list-alt"></i><span> ToDo</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/contact/"><i class="fa-fw fas fa-comments"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Mysql基础篇-多表查询</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-12-18T12:26:46.000Z" title="发表于 2023-12-18 20:26:46">2023-12-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-12-21T13:57:39.824Z" title="更新于 2023-12-21 21:57:39">2023-12-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Mysql/">Mysql</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Mysql基础篇-多表查询"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="多表关系（类别）"><a href="#多表关系（类别）" class="headerlink" title="多表关系（类别）"></a>多表关系（类别）</h1><ul>
+<li><h3 id="一对多"><a href="#一对多" class="headerlink" title="一对多"></a>一对多</h3><blockquote>
+<p>案例： 部门与员工的关系</p>
+<p>关系： 一个部门对应多个员工，一个员工对应多个部门 （员工是多，部门是一）</p>
+<p>实现： 在<strong>多的一方</strong>建立<strong>外键</strong>，指向<strong>一的一方</strong>的<strong>主键</strong></p>
+</blockquote>
+</li>
+<li><h3 id="多对多"><a href="#多对多" class="headerlink" title="多对多"></a>多对多</h3><blockquote>
+<p>案例： 学生与课程的关系</p>
+<p>关系： 一个学生可以选修多个课程，一门课程也能供多个学生选择</p>
+<p>实现： 建立第三张<strong>中间表</strong>，中间表至少包含<strong>两个外键</strong>，分别关联<strong>两方主键</strong></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-- 学生表</span><br><span class="line">create table student(</span><br><span class="line">    id int auto_increment primary key comment &#x27;ID&#x27;,</span><br><span class="line">    name varchar(10) comment &#x27;姓名&#x27;,</span><br><span class="line">    no varchar(10) comment &#x27;学号&#x27;</span><br><span class="line">)comment &#x27;学生表&#x27;;</span><br><span class="line">insert into student(id, name, no) values (......)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-- 课程表</span><br><span class="line">create table course (</span><br><span class="line">    id int auto_increment primary key comment &#x27;主键ID&#x27;,</span><br><span class="line">    name varchar(10) comment &#x27;课程名称&#x27;</span><br><span class="line">)comment &#x27;课程表&#x27;;</span><br><span class="line">insert into course(id, name) VALUES (...)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-- 第三张表</span><br><span class="line">-- 第三张表都作为子键</span><br><span class="line">create table cource_student (</span><br><span class="line">    id int auto_increment primary key comment &#x27;主键&#x27;,</span><br><span class="line">    studentid int not null comment &#x27;学生ID&#x27;,</span><br><span class="line">    courseid int not null comment &#x27;课程ID&#x27;,</span><br><span class="line">    constraint fk_courseid foreign key (courseid) references course(id),</span><br><span class="line">    constraint fk_studentid foreign key (studentid) references  student(id)</span><br><span class="line">)comment &#x27;第三张表&#x27;;</span><br><span class="line">insert into cource_student values (1,1,1);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/20231218212827.png" alt="快乐图片"></p>
+</li>
+<li><h3 id="一对一"><a href="#一对一" class="headerlink" title="一对一"></a>一对一</h3><blockquote>
+<p>案例：用户与用户详情的关系</p>
+<p>关系： 一对一关系，<strong>多用于单表拆分</strong>，将一张表的基础字段放在一张表中，其他详情字段放在另外一张表中，以提升操作效率（呈现的是一些分类的信息）</p>
+<p>实现： 在任意一方加入外键，关联另外一方的主键，并且设置外键为唯一的（unique)</p>
+<p>例如： 每个学员有各种信息，然后每种信息都有ID表示，这个时候就能够用id来建立（unique）外键实现两个表的关联（这个外键可以特地设置）</p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<hr>
+<h1 id="多表查询（概述）"><a href="#多表查询（概述）" class="headerlink" title="多表查询（概述）"></a>多表查询（概述）</h1><p>​	现在有两张表：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-- 表一</span><br><span class="line">insert into dept(id, name) values (1,&#x27;研发部&#x27;),(2,&#x27;市场部&#x27;),(3,&#x27;财务部&#x27;),(4,&#x27;销售部&#x27;),(5,&#x27;总经办&#x27;),(6,&#x27;人事部&#x27;);</span><br><span class="line">-- 表二</span><br><span class="line">insert into emp(id, name, age, job, salary, entrydate, managerid, dept_id) values (1,&#x27;金庸&#x27;,66,&#x27;总裁&#x27;,20000,&#x27;2000-01-01&#x27;,null,5), </span><br><span class="line">(2,&#x27;张无忌&#x27;,20,&#x27;项目经理&#x27;,12500,&#x27;2005-12-05&#x27;,1,1),</span><br><span class="line">(3,&#x27;杨逍&#x27;,33,&#x27;开发&#x27;,8400,&#x27;2000-11-03&#x27;,2,1), </span><br><span class="line">(4,&#x27;丁敏君&#x27;,23,&#x27;出纳&#x27;,5250,&#x27;2009-05-13&#x27;,10,4);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>笛卡尔积现象：</p>
+<p>笛卡尔乘积是指在数学中，两个集合A，B所有组合情况（在多表查询中，需要<strong>消除无效的笛卡尔积</strong>）</p>
+<p>若 select * from emp , dept ;</p>
+<p>这会显示出 最终的数据是六个部门乘以四个人 二十四条数据</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-- 消除 笛卡尔积 的方法就是取一个条件</span><br><span class="line">select * from emp , dept where emp.dept_id = dept.id;</span><br><span class="line">-- 最后只输出了 四条 数据</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="多表查询分类"><a href="#多表查询分类" class="headerlink" title="多表查询分类"></a>多表查询分类</h2><ol>
+<li><h3 id="连接查询"><a href="#连接查询" class="headerlink" title="连接查询"></a>连接查询</h3><blockquote>
+<ol>
+<li><p>内连接： 相当于查询A,B交集部分数据</p>
+</li>
+<li><p>外连接：</p>
+<p>​	^ 左外连接：查询左表的所有数据，以及两张表交集部分数据</p>
+<p>​	^ 右外连接：查询右表的所有数据，以及两张表交集的部分数据</p>
+</li>
+<li><p>自联结：当前表与自身的连接查询，自联结必须使用表别名</p>
+</li>
+</ol>
+</blockquote>
+</li>
+<li><h3 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h3></li>
+<li><h3 id="联合查询"><a href="#联合查询" class="headerlink" title="联合查询"></a>联合查询</h3></li>
+</ol>
+<hr>
+<h2 id="连接查询-1"><a href="#连接查询-1" class="headerlink" title="连接查询"></a>连接查询</h2><ul>
+<li><h2 id="内连接-–-交集"><a href="#内连接-–-交集" class="headerlink" title="内连接 –(交集)"></a>内连接 –(交集)</h2><p>内连接查询的是两张表交集的部分</p>
+<blockquote>
+<p>隐式内连接：</p>
+<p>select 字段列表 from 表1，表2 where 条件…；</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-- 内连接演示</span><br><span class="line">-- 1.查询每一个员工的姓名，以及关联的部门的名称（隐式内连接实现）</span><br><span class="line">-- 表结构：emp , dept</span><br><span class="line">-- 连接条件： emp.dept_id = dept.id</span><br><span class="line">select emp.name,dept.name from emp ,dept where emp.dept_id=dept.id ;</span><br><span class="line">-- 给表名取别名，在多表查询中经常取别名。如果已经取了别名，就不能使用表名限制字段即emp.dept_id是不行的</span><br><span class="line">select * from emp e,dept d where e.dept_id = d.id;</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>显式内连接：(多用)</p>
+<p>select 字段列表 from 表1 [inner] join 表2 on 连接条件；</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-- 2.查询每一个员工的姓名，以及关联的部门的名称（显式内连接实现）  --inner join</span><br><span class="line">select e.name ,d.name  from emp e inner join dept d on e.dept_id = d.id;</span><br><span class="line">-- 注意的是取别名的优先度很高如果写成select emp.name 就是不行的，必须写成e.name</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="外连接（交集加入outer部分）"><a href="#外连接（交集加入outer部分）" class="headerlink" title="外连接（交集加入outer部分）"></a>外连接（交集加入outer部分）</h2><ul>
+<li><h3 id="左外连接"><a href="#左外连接" class="headerlink" title="左外连接"></a>左外连接</h3><blockquote>
+<p>select 字段列表 from 表1 left [outer] join 表2 on 条件….；</p>
+<p>相当于查询表1的所有数据 包含表1与表2交集部分的数据</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-- 左外连接</span><br><span class="line">-- 1. 查询emp表的所有数据，和对应部门信息；</span><br><span class="line">-- 表结构 emp , dept</span><br><span class="line">-- 连接条件： emp.dept_id = dept.id</span><br><span class="line">select e.*,d.name from emp e left outer join dept d on d.id = e.dept_id;</span><br><span class="line">-- 查询到了所有员工以及对应的员工部门，如果不属于任何部门，就会显示null</span><br><span class="line">-- 输出 4-丁敏君- 23-出纳-5205-2009-05-03-10-4-销售部</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><h3 id="右外连接"><a href="#右外连接" class="headerlink" title="右外连接"></a>右外连接</h3><blockquote>
+<p>select 字段列表 from 表1 right [outer] join 表2 on 条件… ；</p>
+<p>相当于查询表2的所有数据，包含表1与表2交集的部分的数据</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-- 右外连接</span><br><span class="line">-- 2. 查询dept表的所有数据，和对应员工信息</span><br><span class="line">select d.*,e.name from emp e right join dept d on d.id = e.dept_id;</span><br><span class="line">-- 输出为 所有部门，对应的人，如果没有输出Null</span><br><span class="line">-- 注意 emp与dept的顺序 谁在左边谁就是表1，谁在右边就是表2，无论查左外还是右外只要改个单词就行了，表的前后顺序不用变</span><br><span class="line">-- 输出 5-总经办-金庸</span><br></pre></td></tr></table></figure>
+
+<p>右外左外连接都是left,right，表一表二顺序不同导致的，可以互通修改</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><h2 id="自联结"><a href="#自联结" class="headerlink" title="自联结"></a>自联结</h2><blockquote>
+<p>select 字段列表 from 表A 别名A join 表A 别名B on 条件….；</p>
+<p>自连接查询，可以是内连接查询，也可以是外连接查询</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>manageid</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>金庸</td>
+<td>null</td>
+</tr>
+<tr>
+<td>2</td>
+<td>张无忌</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>韦一笑</td>
+<td>2</td>
+</tr>
+<tr>
+<td>4</td>
+<td>丁敏君</td>
+<td>2</td>
+</tr>
+<tr>
+<td>5</td>
+<td>周芷若</td>
+<td>3</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>如果用来查询某个员工所属领导，就用manageid来指向id</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-- 自连接（必须起别名，需要分成两张表）</span><br><span class="line">-- 1. 查询员工 及其 所属领导(managerid)的名字  (内连接)</span><br><span class="line">-- 我们可以直接吧emp 看成两张表a,表b （分身bushi）</span><br><span class="line">select a.name, b.name  from emp a , emp b where a.managerid = b.id;</span><br><span class="line">-- 很像数据结构的图的层状遍历</span><br><span class="line">-- 2. 查询所有员工 emp 及其领导的名字emp， 如果员工没有领导，他需要查询出来（外连接）</span><br><span class="line">select a.name &#x27;员工&#x27;,b.name &#x27;领导&#x27;  from emp a left join emp b on a.managerid = b.id ;</span><br><span class="line">-- 绝对需要搞清楚 left/right 表a,表b的顺序，不然老板员工就反了hahah~~</span><br></pre></td></tr></table></figure>
+
+<hr>
+<ul>
+<li><h2 id="联合查询-union-union-all"><a href="#联合查询-union-union-all" class="headerlink" title="联合查询-union,union all"></a>联合查询-union,union all</h2><blockquote>
+<p>就是把多次查询的结果合并起来，形成一个新的查询结果集</p>
+<p>select 字段列表 from 表A …</p>
+<p>union [all]</p>
+<p>select 字段列表 from 表B…；</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-- 将薪资低于5000 的员工 和年龄大于五十的员工都查询出来</span><br><span class="line">select * from emp where salary&lt;5000</span><br><span class="line">union all</span><br><span class="line">select * from emp where age &gt;50;</span><br><span class="line">-- union all 查询出的结果会重复，相当于 &#x27;或&#x27;</span><br><span class="line">-- union 查询的结果不会重复, 相当于 ‘与’</span><br><span class="line">-- 注意你搜索的字段列表必须统一(数量和类型)，不能一个是* 一个是name，这是会报错的！！！</span><br></pre></td></tr></table></figure>
+
+<hr>
+<ul>
+<li><h2 id="子查询-1"><a href="#子查询-1" class="headerlink" title="子查询"></a>子查询</h2><p>又称为嵌套查询</p>
+<blockquote>
+<p>select * from t1 where column1 &#x3D; (select column1 from t2)；</p>
+<p>子查询外部的语句可以是，crud的任何一个</p>
+</blockquote>
+<blockquote>
+<p>根据子查询结果的不同分类</p>
+<ol>
+<li>标量子查询： 子查询结果为单个值</li>
+<li>列子查询： 结果为一列</li>
+<li>行子查询： 一行</li>
+<li>表子查询： 多行多列</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>根据子查询位置分类</p>
+<ol>
+<li>where 之后</li>
+<li>from 之后</li>
+<li>select 之后</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<hr>
+<ul>
+<li><h3 id="标量子查询-单个值"><a href="#标量子查询-单个值" class="headerlink" title="标量子查询(单个值)"></a>标量子查询(单个值)</h3>常见操作符（&gt;,&#x3D;,&lt;,&lt;&gt;）</li>
+</ul>
+<p>​	子查询返回的结果是单个值（数字，字符串，日期）（最简单）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">-- 标量子查询</span><br><span class="line">-- 1. 查询‘销售部’ 的所有员工信息</span><br><span class="line">-- a.  查询‘销售部’的部门id</span><br><span class="line">select id from dept where name = &#x27;销售部&#x27;;</span><br><span class="line">-- b.  根据‘销售部’的部门id,查询员工信息</span><br><span class="line">select * from emp where dept_id = 4;</span><br><span class="line">-- ---------------------------------------------------------------------------</span><br><span class="line">-- 结合起来</span><br><span class="line">select * from emp where dept_id = (select id from dept where name = &#x27;销售部&#x27;);</span><br><span class="line">-- 括号中的查询叫做子查询，因为返回的只有一个id值（一条记录），所以叫标量子查询</span><br><span class="line">-- ----------------------------------------------------------------------------</span><br><span class="line">-- 2. 入职 &#x27;张无忌&#x27; 入职之后的员工信息</span><br><span class="line">-- a. 查询 &#x27;张无忌&#x27; 的入职日期</span><br><span class="line">-- b. 查询 &#x27;张无忌&#x27; 之后的入职日期</span><br><span class="line">select * from emp where entrydate&gt;(select entrydate from emp where name = &#x27;张无忌&#x27;);</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><h3 id="列子查询（结果为一列）"><a href="#列子查询（结果为一列）" class="headerlink" title="列子查询（结果为一列）"></a>列子查询（结果为一列）</h3><p>常见操作符 in ,not in ,any ,some ,all</p>
+<table>
+<thead>
+<tr>
+<th align="center">any</th>
+<th align="center">子查询返回列表中，有任意一个满足就行</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">some</td>
+<td align="center">与any等价，两者可以互相使用</td>
+</tr>
+<tr>
+<td align="center">all</td>
+<td align="center">子查询返回列表中，所有值必须都满足</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-- 查询‘销售部’和 ‘市场部’ 的所有员工信息</span><br><span class="line">-- a. 查询两者的部门ID</span><br><span class="line">-- b. 根据部门ID， 查询员工信息</span><br><span class="line">select *from emp where dept_id in (select id from dept where name in (&#x27;销售部&#x27;,&#x27;市场部&#x27;));</span><br><span class="line">-- -------------------------------------------------------------------</span><br><span class="line">-- 查询比市场部所有人工资都高的员工信息（套娃行为）</span><br><span class="line">select * from emp where salary &gt; all (select salary from emp where dept_id = (select id from dept where name =&#x27;市场部&#x27;));</span><br><span class="line">-- -------------------------------------------------------------------</span><br><span class="line">-- 查询工资比市场部比任意一人高的员工信息</span><br><span class="line">select * from emp where salary &gt; any (select salary from emp where dept_id = (select id from dept where name =&#x27;市场部&#x27;));</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><h3 id="行子查询（结果为一行）"><a href="#行子查询（结果为一行）" class="headerlink" title="行子查询（结果为一行）"></a>行子查询（结果为一行）</h3><p>子查询返回的结果是一行，可以是多列</p>
+<p>常用操作符： &#x3D; ， &lt;&gt; ， in ， not in </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-- 查询与张无忌薪资及直属领导相同的员工信息</span><br><span class="line">-- a. 查询张无忌 的薪资及其 直属领导</span><br><span class="line">select emp.salary, emp.managerid from emp where name = &#x27;张无忌&#x27;;</span><br><span class="line">-- b. 查询薪资相同的员工信息</span><br><span class="line">select * from emp where salary = 12500 and managerid =1 ;</span><br><span class="line">select * from emp where (salary,managerid)=(12500,1);</span><br><span class="line">-- 结合</span><br><span class="line">select * from emp where (salary,managerid)=(select emp.salary, emp.managerid from emp where name = &#x27;张无忌&#x27;);</span><br><span class="line">-- 括号中的类型要对应</span><br><span class="line">-- 返回结果一行多列</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><h4 id="表子查询（多行多列）"><a href="#表子查询（多行多列）" class="headerlink" title="表子查询（多行多列）"></a>表子查询（多行多列）</h4><p>子查询返回的结果是多行多列</p>
+<p>常用操作符：in， 经常出现在from之后</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-- 查询与鹿杖客，宋远桥的职位和薪资相同的员工信息</span><br><span class="line">-- a. 查询他们的职位和薪资</span><br><span class="line">select job, salary from emp where name = &#x27;宋远桥&#x27; or name = &#x27;鹿杖客&#x27;;</span><br><span class="line">-- b. 查询员工信息</span><br><span class="line">select * from  emp where (job,salary) in (select job, salary from emp where name = &#x27;宋远桥&#x27; or name = &#x27;鹿杖客&#x27;) ;</span><br><span class="line"></span><br><span class="line">-- 查询入职日期为“...”之后的员工信息（这部分员工），及其部门信息</span><br><span class="line">select e.*,d.* from (select * from emp where  entrydate&gt; &#x27;....&#x27;) e left join dept d on e.dept_id = d.id;</span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<hr>
+</li>
+</ul>
+<ul>
+<li><h2 id="多表查询案例"><a href="#多表查询案例" class="headerlink" title="多表查询案例"></a>多表查询案例</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">-- 加一张表</span><br><span class="line">create table salgrade</span><br><span class="line">(</span><br><span class="line">    grade int comment &#x27;等级&#x27;,</span><br><span class="line">    losal int comment &#x27;最低薪资&#x27;,</span><br><span class="line">    hisal int comment &#x27;最高薪资&#x27;</span><br><span class="line">) comment &#x27;薪资等级表&#x27;;</span><br><span class="line"></span><br><span class="line">insert into salgrade(grade, losal, hisal)</span><br><span class="line">VALUES (1, 0, 3000),</span><br><span class="line">       (2, 3001, 5000),</span><br><span class="line">       (3, 5001, 8000),</span><br><span class="line">       (4, 8001, 10000),</span><br><span class="line">       (5, 10001, 15000);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">-- 1.查询员工的姓名，年龄，职位，部门信息。 (隐式内连接)-from 后面写两张表</span><br><span class="line">select e.name, e.age, e.job, d.id</span><br><span class="line">from emp e,</span><br><span class="line">     dept d</span><br><span class="line">where e.dept_id = d.id;</span><br><span class="line"></span><br><span class="line">-- 2.查询年龄小于30的员工姓名，年龄，职位，部门信息 (显式内连接)</span><br><span class="line">select e.name, e.age, e.job, d.name</span><br><span class="line">from emp e</span><br><span class="line">         inner join dept d on e.dept_id = d.id</span><br><span class="line">where e.age &lt; 30;</span><br><span class="line"></span><br><span class="line">-- 3.查询拥有员工的部门ID，部门名称  -- 使用distinct对查询结果去重</span><br><span class="line">select distinct d.id, d.name</span><br><span class="line">from dept d join emp e on d.id = e.dept_id;</span><br><span class="line">         </span><br><span class="line">-- 4.查询所有年龄大于40岁的员工，及其归属的部门名称，如果员工没有分配部门，也需要展示出来</span><br><span class="line">select e.name, d.name</span><br><span class="line">from emp e left outer join dept d on d.id = e.dept_id</span><br><span class="line">where e.age &gt; 40;</span><br><span class="line"></span><br><span class="line">-- 5.查询所有员工的工资等级  emp salary</span><br><span class="line">select e.name, s.grade</span><br><span class="line">from emp e,</span><br><span class="line">     salgrade s</span><br><span class="line">where e.salary between s.losal and s.hisal;</span><br><span class="line"></span><br><span class="line">-- 6.查询 研发部所有员工的信息及其工资等级 (三张表) n张表至少有n-1个条件</span><br><span class="line">select e.name, s.grade</span><br><span class="line">from emp e,</span><br><span class="line">     dept d,</span><br><span class="line">     salgrade s</span><br><span class="line">where e.dept_id = d.id</span><br><span class="line">  and e.salary between s.losal and s.hisal</span><br><span class="line">  and d.name = &#x27;研发部&#x27;;</span><br><span class="line">-- 右键 reformat code格式化</span><br><span class="line"></span><br><span class="line">-- 7.查询研发部员工的平均工资</span><br><span class="line">select d.name, avg(e.salary)</span><br><span class="line">from emp e,</span><br><span class="line">     dept d</span><br><span class="line">where e.dept_id = d.id</span><br><span class="line">  and d.name = &#x27;研发部&#x27;;</span><br><span class="line">  </span><br><span class="line">-- 8.查询工资比灭绝师太高的员工信息 (子查询)</span><br><span class="line">select *</span><br><span class="line">from emp e</span><br><span class="line">where e.salary &gt; (select salary from emp where name = &#x27;灭绝师太&#x27;);</span><br><span class="line"></span><br><span class="line">-- 9.查询比平均薪资高的员工信息</span><br><span class="line">select *</span><br><span class="line">from emp</span><br><span class="line">where salary &gt; (select avg(salary) from emp);</span><br><span class="line"></span><br><span class="line">-- 10.查询低于本部门平均工资的员工信息  (自连接,关键词 本部门)</span><br><span class="line">select *</span><br><span class="line">from emp e1</span><br><span class="line">where e1.salary &lt; (select avg(e2.salary) from emp e2 where e1.dept_id = e2.dept_id);</span><br><span class="line"></span><br><span class="line">-- 11.查询所有的部门信息，并统计部门的员工数量</span><br><span class="line">select d.id, d.name, (select count(*) from emp e where e.dept_id = d.id) &#x27;人数&#x27;</span><br><span class="line">from dept d;</span><br><span class="line"></span><br><span class="line">-- 12.查询所有学生的选课情况，展示出学生名称，学号，课程名称。 student,course,student_course</span><br><span class="line">select s.name, s.no, c.name</span><br><span class="line">from student s,</span><br><span class="line">     course c,</span><br><span class="line">     cource_student cs</span><br><span class="line">where s.id = cs.id</span><br><span class="line">  and c.id = cs.id;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>几张表</li>
+<li>表的连接条件</li>
+<li>查询条件</li>
+<li>可以先分开来写所有的算式，最后再连接起来</li>
+<li>用from 后面加多张表性能会很差同时可能会出现笛卡尔积的情况，每张表1000个记录 就得在内存里开个1000000000行的表，所以尽量用join on</li>
+<li>多表查询好懵逼，今天周杰伦发新歌了wow！</li>
+</ol>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Echin-h</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/12/18/Mysql%E5%9F%BA%E7%A1%80%E7%AF%87-%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/">http://example.com/2023/12/18/Mysql%E5%9F%BA%E7%A1%80%E7%AF%87-%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Echin の 博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Mysql/">Mysql</a></div><div class="post_share"><div class="social-share" data-image="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/12/18/GO%E5%9C%A3%E7%BB%8F-%E5%85%A5%E9%97%A8/" title="GO圣经-入门"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">GO圣经-入门</div></div></a></div><div class="next-post pull-right"><a href="/2023/12/22/PTA%E9%A2%98%E7%9B%AE/" title="PTA题目"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">PTA题目</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/12/14/Mysql%E5%9F%BA%E7%A1%80%E7%AF%87-DDL/" title="Mysql基础篇-DDL"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-14</div><div class="title">Mysql基础篇-DDL</div></div></a></div><div><a href="/2023/12/14/Mysql%E5%9F%BA%E7%A1%80%E7%AF%87-DML/" title="Mysql基础篇-DML"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-14</div><div class="title">Mysql基础篇-DML</div></div></a></div><div><a href="/2023/12/14/Mysql%E5%9F%BA%E7%A1%80%E7%AF%87-DQL/" title="Mysql基础篇-DQL"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-14</div><div class="title">Mysql基础篇-DQL</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Echin-h</div><div class="author-info__description">keep learning</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Echin-h" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://mail.qq.com/cgi-bin/frame_html?sid=vYYzrbDEaqDZEhl8&amp;r=0505616c4ef48760cb44f616432dfbd8&amp;lang=zh" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">love is accumulated, not love, too.</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E8%A1%A8%E5%85%B3%E7%B3%BB%EF%BC%88%E7%B1%BB%E5%88%AB%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">多表关系（类别）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E5%AF%B9%E5%A4%9A"><span class="toc-number">1.0.1.</span> <span class="toc-text">一对多</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E5%AF%B9%E5%A4%9A"><span class="toc-number">1.0.2.</span> <span class="toc-text">多对多</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E5%AF%B9%E4%B8%80"><span class="toc-number">1.0.3.</span> <span class="toc-text">一对一</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2%EF%BC%88%E6%A6%82%E8%BF%B0%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">多表查询（概述）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2%E5%88%86%E7%B1%BB"><span class="toc-number">2.1.</span> <span class="toc-text">多表查询分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="toc-number">2.1.1.</span> <span class="toc-text">连接查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">2.1.2.</span> <span class="toc-text">子查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%94%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="toc-number">2.1.3.</span> <span class="toc-text">联合查询</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2-1"><span class="toc-number">2.2.</span> <span class="toc-text">连接查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E8%BF%9E%E6%8E%A5-%E2%80%93-%E4%BA%A4%E9%9B%86"><span class="toc-number">2.3.</span> <span class="toc-text">内连接 –(交集)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E8%BF%9E%E6%8E%A5%EF%BC%88%E4%BA%A4%E9%9B%86%E5%8A%A0%E5%85%A5outer%E9%83%A8%E5%88%86%EF%BC%89"><span class="toc-number">2.4.</span> <span class="toc-text">外连接（交集加入outer部分）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A6%E5%A4%96%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.4.1.</span> <span class="toc-text">左外连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%B3%E5%A4%96%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.4.2.</span> <span class="toc-text">右外连接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E8%81%94%E7%BB%93"><span class="toc-number">2.5.</span> <span class="toc-text">自联结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%81%94%E5%90%88%E6%9F%A5%E8%AF%A2-union-union-all"><span class="toc-number">2.6.</span> <span class="toc-text">联合查询-union,union all</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%90%E6%9F%A5%E8%AF%A2-1"><span class="toc-number">2.7.</span> <span class="toc-text">子查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E9%87%8F%E5%AD%90%E6%9F%A5%E8%AF%A2-%E5%8D%95%E4%B8%AA%E5%80%BC"><span class="toc-number">2.7.1.</span> <span class="toc-text">标量子查询(单个值)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E5%AD%90%E6%9F%A5%E8%AF%A2%EF%BC%88%E7%BB%93%E6%9E%9C%E4%B8%BA%E4%B8%80%E5%88%97%EF%BC%89"><span class="toc-number">2.7.2.</span> <span class="toc-text">列子查询（结果为一列）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%8C%E5%AD%90%E6%9F%A5%E8%AF%A2%EF%BC%88%E7%BB%93%E6%9E%9C%E4%B8%BA%E4%B8%80%E8%A1%8C%EF%BC%89"><span class="toc-number">2.7.3.</span> <span class="toc-text">行子查询（结果为一行）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%EF%BC%88%E5%A4%9A%E8%A1%8C%E5%A4%9A%E5%88%97%EF%BC%89"><span class="toc-number">2.7.3.1.</span> <span class="toc-text">表子查询（多行多列）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2%E6%A1%88%E4%BE%8B"><span class="toc-number">2.8.</span> <span class="toc-text">多表查询案例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">2.9.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/02/06/%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84/" title="相对路径">相对路径</a><time datetime="2024-02-06T11:35:56.000Z" title="发表于 2024-02-06 19:35:56">2024-02-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/02/05/%E7%AE%80%E5%8D%95%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" title="简单排序算法">简单排序算法</a><time datetime="2024-02-05T13:32:08.000Z" title="发表于 2024-02-05 21:32:08">2024-02-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/02/05/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/" title="时间复杂度">时间复杂度</a><time datetime="2024-02-05T13:31:32.000Z" title="发表于 2024-02-05 21:31:32">2024-02-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/02/05/Module%E5%AE%9E%E7%8E%B0/" title="Module实现">Module实现</a><time datetime="2024-02-05T09:36:53.000Z" title="发表于 2024-02-05 17:36:53">2024-02-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/02/03/Go%E5%A5%BD%E7%8E%A9%E7%9A%84%E7%94%A8%E6%B3%95%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%EF%BC%89/" title="Go好玩的用法（持续更新）">Go好玩的用法（持续更新）</a><time datetime="2024-02-03T12:42:53.000Z" title="发表于 2024-02-03 20:42:53">2024-02-03</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E9%BB%91%E8%89%B2.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Echin-h</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">today is a beautiful day</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>
