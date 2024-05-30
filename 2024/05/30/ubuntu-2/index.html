@@ -1,0 +1,479 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>unbuntu-2 | Echin の 博客</title><meta name="author" content="Echin-h"><meta name="copyright" content="Echin-h"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="Ubuntu学习笔记2 用户管理 用户和组(不用着重了解) 文件权限 可执行脚本 环境变量        Ubuntu学习笔记2#[TOC] 用户管理#用户管理操作中，需要有root超级用户的权限，要不然无法操作 sudo 表示以管理员身份执行 Linux下，能执行sudo命令的用户叫做 sudoer 123echin@i:~$ useradd esuseradd: Permission">
+<meta property="og:type" content="article">
+<meta property="og:title" content="unbuntu-2">
+<meta property="og:url" content="http://example.com/2024/05/30/ubuntu-2/index.html">
+<meta property="og:site_name" content="Echin の 博客">
+<meta property="og:description" content="Ubuntu学习笔记2 用户管理 用户和组(不用着重了解) 文件权限 可执行脚本 环境变量        Ubuntu学习笔记2#[TOC] 用户管理#用户管理操作中，需要有root超级用户的权限，要不然无法操作 sudo 表示以管理员身份执行 Linux下，能执行sudo命令的用户叫做 sudoer 123echin@i:~$ useradd esuseradd: Permission">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg">
+<meta property="article:published_time" content="2024-05-30T09:27:26.000Z">
+<meta property="article:modified_time" content="2024-05-30T15:11:24.296Z">
+<meta property="article:author" content="Echin-h">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg"><link rel="shortcut icon" href="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg"><link rel="canonical" href="http://example.com/2024/05/30/ubuntu-2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"TQQRJ72W3Y","apiKey":"691b279e3e99ecf664b63c47582168b7","indexName":"hexo","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Echin-h","link":"链接: ","source":"来源: Echin の 博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'unbuntu-2',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-30 23:11:24'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.0.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">120</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">34</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">33</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/todo/"><i class="fa-fw fas fa-list-alt"></i><span> ToDo</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/contact/"><i class="fa-fw fas fa-comments"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Echin の 博客"><span class="site-name">Echin の 博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/todo/"><i class="fa-fw fas fa-list-alt"></i><span> ToDo</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/contact/"><i class="fa-fw fas fa-comments"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">unbuntu-2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-30T09:27:26.000Z" title="发表于 2024-05-30 17:27:26">2024-05-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-30T15:11:24.296Z" title="更新于 2024-05-30 23:11:24">2024-05-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Linux/">Linux</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="unbuntu-2"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><div class="toc">
+
+<!-- toc -->
+
+<ul>
+<li><a href="#ubuntu%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02">Ubuntu学习笔记2</a><ul>
+<li><a href="#%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86">用户管理</a></li>
+<li><a href="#%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84%E4%B8%8D%E7%94%A8%E7%9D%80%E9%87%8D%E4%BA%86%E8%A7%A3">用户和组(不用着重了解)</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90">文件权限</a></li>
+<li><a href="#%E5%8F%AF%E6%89%A7%E8%A1%8C%E8%84%9A%E6%9C%AC">可执行脚本</a></li>
+<li><a href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">环境变量</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+
+</div>
+
+<h2><span id="ubuntu学习笔记2">Ubuntu学习笔记2</span><a href="#ubuntu学习笔记2" class="header-anchor">#</a></h2><p>[TOC]</p>
+<h3><span id="用户管理">用户管理</span><a href="#用户管理" class="header-anchor">#</a></h3><p>用户管理操作中，需要有<code>root</code>超级用户的权限，要不然无法操作</p>
+<p><code>sudo</code> 表示以<strong>管理员身份</strong>执行</p>
+<p>Linux下，能执行<code>sudo</code>命令的用户叫做 <code>sudoer</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echin@i:~$ useradd es</span><br><span class="line">useradd: Permission denied.</span><br><span class="line">useradd: cannot lock /etc/passwd; try again later.</span><br></pre></td></tr></table></figure>
+
+<h4><span id="切换用户">切换用户</span><a href="#切换用户" class="header-anchor">#</a></h4><p>可以看到<code>echin</code> 用户并没有权限操作用户管理</p>
+<p><code>su</code> &#x3D; <code>switch user</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">echin@i:~$ sudu useradd -m <span class="built_in">test</span> </span><br><span class="line">Command <span class="string">&#x27;sudu&#x27;</span> not found, did you mean:</span><br><span class="line">  <span class="built_in">command</span> <span class="string">&#x27;tudu&#x27;</span> from deb tudu (0.10.4-2)</span><br><span class="line">  <span class="built_in">command</span> <span class="string">&#x27;sudo&#x27;</span> from deb sudo (1.9.14p2-1ubuntu1)</span><br><span class="line">  <span class="built_in">command</span> <span class="string">&#x27;sudo&#x27;</span> from deb sudo-ldap (1.9.14p2-1ubuntu1)</span><br><span class="line">Try: apt install &lt;deb name&gt;</span><br></pre></td></tr></table></figure>
+
+<p>所以需要切换用户到超级用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su root</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echin@i:~$ su root</span><br><span class="line">Password:  <span class="comment">#密码不显示的</span></span><br><span class="line">root@i:/home/echin<span class="comment"># </span></span><br></pre></td></tr></table></figure>
+
+<h4><span id="添加用户">添加用户</span><a href="#添加用户" class="header-anchor">#</a></h4><ul>
+<li><code>m</code> 表示在 <code>/home</code> 下添加用户目录</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo useradd -m  test</span><br></pre></td></tr></table></figure>
+
+<p>例子</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@i:/<span class="comment"># sudo useradd -m test1</span></span><br><span class="line">root@i:/<span class="comment"># ls /home </span></span><br><span class="line">deploy  echin  test1</span><br></pre></td></tr></table></figure>
+
+<h4><span id="修改用户密码">修改用户密码</span><a href="#修改用户密码" class="header-anchor">#</a></h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo passwd test1</span><br></pre></td></tr></table></figure>
+
+<p>例子</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@i:/<span class="comment"># sudo passwd test1</span></span><br><span class="line">New password: </span><br><span class="line">Retype new password: </span><br><span class="line">passwd: password updated successfully</span><br></pre></td></tr></table></figure>
+
+<h4><span id="删除用户">删除用户</span><a href="#删除用户" class="header-anchor">#</a></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo userdel test1</span><br><span class="line">sudo <span class="built_in">rm</span> -rf /home/test1</span><br></pre></td></tr></table></figure>
+
+<p>例子</p>
+<p>可以看到，我们虽然删除了用户，但是<code>/home/test1</code>这个目录不会删除</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@i:/<span class="comment"># sudo userdel test1</span></span><br><span class="line">root@i:/<span class="comment"># ls /home</span></span><br><span class="line">deploy  echin  test1</span><br><span class="line">root@i:/<span class="comment"># sudo userdel test1</span></span><br><span class="line">userdel: user <span class="string">&#x27;test1&#x27;</span> does not exist</span><br></pre></td></tr></table></figure>
+
+<h4><span id="推出">推出</span><a href="#推出" class="header-anchor">#</a></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+
+<h3><span id="用户和组不用着重了解">用户和组(不用着重了解)</span><a href="#用户和组不用着重了解" class="header-anchor">#</a></h3><p>因为一般来说<code>Linux</code>中不会有很多用户，所以不需要组这个概念</p>
+<p>所以我绝对这下面的命令不需要知道，只要问<code>gpt</code>一下</p>
+<h4><span id="创建组">创建组</span><a href="#创建组" class="header-anchor">#</a></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo groupadd boys</span><br></pre></td></tr></table></figure>
+
+<h4><span id="创建用户">创建用户</span><a href="#创建用户" class="header-anchor">#</a></h4><ul>
+<li><code>g</code> 表示添加用户，同时将用户加到&#96;&#96;boys&#96;里面</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo useradd -m -g boys xiaoMing</span><br></pre></td></tr></table></figure>
+
+<h4><span id="修改用户信息">修改用户信息</span><a href="#修改用户信息" class="header-anchor">#</a></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo usermod -g boys echin</span><br></pre></td></tr></table></figure>
+
+<h4><span id="查看用户和组">查看用户和组</span><a href="#查看用户和组" class="header-anchor">#</a></h4><p>查看<code>group</code>的信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/group</span><br></pre></td></tr></table></figure>
+
+<p>查看一个用户的信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/passwd</span><br></pre></td></tr></table></figure>
+
+<h3><span id="文件权限">文件权限</span><a href="#文件权限" class="header-anchor">#</a></h3><ul>
+<li><code>owner</code> 文件的属主 <code>owner</code></li>
+<li><code>-r</code> 文件是否可读 <code>read</code></li>
+<li><code>-w</code> 文件是否可写 <code>write</code></li>
+<li><code>-x</code> 文件是否可以执行 <code>excute</code></li>
+</ul>
+<blockquote>
+<p>如果系统中有用户 a 和 b</p>
+<p>一个文件 xx.txt，由 a 创建</p>
+<p>那么 b 是否可以访问这个文件，是否可读，是否可写</p>
+</blockquote>
+<h4><span id="查看权限">查看权限</span><a href="#查看权限" class="header-anchor">#</a></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ls</span> -l xx.txt</span><br></pre></td></tr></table></figure>
+
+<p>例子</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@i:/<span class="comment"># cd /home/echin</span></span><br><span class="line">root@i:/home/echin<span class="comment"># ls -l</span></span><br><span class="line">total 20</span><br><span class="line">-rw-rw-r-- 1 echin echin   264 May 30 13:09 aaa.tar.gz</span><br><span class="line">lrwxrwxrwx 1 echin echin     5 May 30 17:17 <span class="built_in">link</span> -&gt; world</span><br><span class="line">drwxrwxr-x 4 echin echin  4096 May 30 13:03 world</span><br><span class="line">-rw-rw-r-- 1 echin echin 10240 May 30 12:56 xxx.tar</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-rw-rw-r--</code>  表示文件的权限</li>
+<li><code>1</code>  表示目录中有多少文件</li>
+<li><code>echin</code>   创建文件的<code>owner</code></li>
+<li><code>echin</code>  组</li>
+<li><code>10240</code> 文件的大小</li>
+<li><code>May 30 12:56</code>  创建或修改时间</li>
+<li><code>xxx.tar</code>  文件的名称</li>
+</ul>
+<h4><span id="权限字符的详解">权限字符的详解</span><a href="#权限字符的详解" class="header-anchor">#</a></h4><p>例子 ： <code> -rw-r--r--</code></p>
+<ul>
+<li><p>第一个字符 ： <code>-</code></p>
+<ol>
+<li><code>-</code> 表示文件</li>
+<li><code>d</code> 表示目录</li>
+<li><code>l</code> 表示软链接</li>
+</ol>
+</li>
+<li><p><code>r w - | r - - | r - - </code> &#x3D; <code>自己 | 同组 | 别人</code></p>
+</li>
+</ul>
+<p>  分别表示 <code>自己有什么权限 | 同组的人有什么权限 | 别人有什么权限 </code></p>
+<ul>
+<li><p>每个部分的解释 </p>
+<p><code>r w x</code> 分别表示 <code>可读 可写 可执行</code></p>
+<p>如果是 <code>-</code> 就表示 不能读&#x2F;写&#x2F;执行</p>
+</li>
+<li><p>解释： <code>r w - | r - - | r - -</code> 表示</p>
+</li>
+</ul>
+<p>  <strong>自己可读可写不可执行|同组的人可读不可写不可执行|别人可读不可写不可执行</strong></p>
+<ul>
+<li>解释二 <code>r w x </code> 为<strong>可读可写可执行</strong></li>
+</ul>
+<h4><span id="修改文件的权限">修改文件的权限</span><a href="#修改文件的权限" class="header-anchor">#</a></h4><blockquote>
+<p>文件权限的修改只能由 <strong>文件的属主</strong> 和 <strong>超级用户</strong> 修改</p>
+</blockquote>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> <span class="comment"># change file mode</span></span><br></pre></td></tr></table></figure>
+
+<p>如果给 xx 添加给别人的可读权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> o+w example.txt <span class="comment"># 表示添加别人可写的权限</span></span><br><span class="line"><span class="built_in">chmod</span> o-w example.txt <span class="comment"># 表示减少别人可写的权限</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>a</code> 表示 <code>all</code> ,是所有人的意思</li>
+<li><code>u</code>表示 <code>user</code> , 是自己的权限</li>
+<li><code>o</code>表示 <code>other </code>， 是别人的权限</li>
+</ul>
+<p>省略的写法</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> +w simple.txt <span class="comment"># 默认修改自己和同组的权限</span></span><br></pre></td></tr></table></figure>
+
+<h4><span id="修改文件的属主">修改文件的属主</span><a href="#修改文件的属主" class="header-anchor">#</a></h4><p>一般来说，每个用户只操作自己的用户目录，所以 <code>chown</code>命令并不常用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chown</span> <span class="comment"># change owner</span></span><br></pre></td></tr></table></figure>
+
+<h3><span id="可执行脚本">可执行脚本</span><a href="#可执行脚本" class="header-anchor">#</a></h3><p>脚本 <code>script</code> ，一种解释执行的程序</p>
+<p><code>Linux</code> 下常见的三种脚本程序</p>
+<ul>
+<li><code>Shell</code> 脚本 <code>*.sh</code></li>
+<li><code>Perl</code> 脚本 <code>*.pl</code></li>
+<li><code>Python</code> 脚本 <code>*.py</code></li>
+</ul>
+<p>脚本程序，本质是一个<strong>文本文件</strong>，这些程序都是由解释器来执行的</p>
+<p>如果要执行文件就直接 <code>hello.py</code></p>
+<ol>
+<li>他是一个文本文件</li>
+<li>它具有可执行的权限</li>
+</ol>
+<p>类似于这个：</p>
+<p><img src="C:/Users/%E4%BD%95%E4%B8%80%E5%B7%9D/AppData/Roaming/Typora/typora-user-images/image-20240530195512927.png" alt="image-20240530195512927"></p>
+<h4><span id="shell-脚本">Shell 脚本</span><a href="#shell-脚本" class="header-anchor">#</a></h4><p><code>Shell</code>，是<code>Linux</code>自带的脚本语言</p>
+<p>他其实可以做循环，判断，每一行都是一个命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> xx.sh</span><br><span class="line"><span class="built_in">chmod</span> +x xx.sh</span><br><span class="line">./xx.sh</span><br></pre></td></tr></table></figure>
+
+<p>下面是我运行的图片</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/sh</span></span><br><span class="line"> echo &quot;hello,world&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/image-20240530200818619.png" alt="image-20240530200818619"></p>
+<ol>
+<li>发现第一次创建<code>hello.sh</code>的时候这个文件并没有权限执行，所以需要添加权限</li>
+<li>使用<code>nano</code>文本编辑器进行编辑，因为我没有其他的，这个是自带的</li>
+<li>编辑好了以后<code>ctrl + x </code> 退出</li>
+<li>很多时候可以看颜色判断是否可以执行，白色就是不行</li>
+</ol>
+<h4><span id="python-脚本">Python 脚本</span><a href="#python-脚本" class="header-anchor">#</a></h4><p><code>Python</code>脚本比<code>Shell</code>更加强大</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> xx.py</span><br><span class="line"><span class="built_in">chmod</span> +x hello.py</span><br><span class="line">./hello.py</span><br></pre></td></tr></table></figure>
+
+<p>下面看示例（具体过程和shell一样）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Hello, World!&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/image-20240530202301490.png" alt="image-20240530202301490"></p>
+<h3><span id="环境变量">环境变量</span><a href="#环境变量" class="header-anchor">#</a></h3><p><strong>作用域</strong>：</p>
+<ul>
+<li>可以在当前终端中使用</li>
+<li>可以在<code>shell</code>脚本中调用</li>
+</ul>
+<blockquote>
+<p>在命令行中定义的环境变量，只对当前的SHELL终端有效</p>
+<p>当关闭终端后，重启后就消失了</p>
+</blockquote>
+<p><strong>分类：</strong></p>
+<ul>
+<li>系统环境变量</li>
+<li>用户环境变量</li>
+<li>PATH环境变量（比较特殊，所以特地拿出来讲）</li>
+</ul>
+<h4><span id="-创建x2f修改环境变量">- 创建&#x2F;修改环境变量</span><a href="#-创建x2f修改环境变量" class="header-anchor">#</a></h4><p>这个内容后面都会提到，这里不需要太执着</p>
+<p>注意这个<code>=</code>要和旁边两个东西紧密相连</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> VARIABLE_NAME=VALUE</span><br></pre></td></tr></table></figure>
+
+<p>设置<code>path</code>变量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/additional/path</span><br></pre></td></tr></table></figure>
+
+<h4><span id="-显示所有环境变量">- 显示所有环境变量</span><a href="#-显示所有环境变量" class="header-anchor">#</a></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">env</span></span><br></pre></td></tr></table></figure>
+
+<h4><span id="-刷新环境变量">- 刷新环境变量</span><a href="#-刷新环境变量" class="header-anchor">#</a></h4><p>如果你不使用下面这个命令，那么每次修改完环境变量都需要<strong>注销登录</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> /etc/profile.d/myprofile.sh</span><br></pre></td></tr></table></figure>
+
+<h4><span id="用户环境变量">用户环境变量</span><a href="#用户环境变量" class="header-anchor">#</a></h4><blockquote>
+<p>“用户环境变量”和”环境变量”这两个术语在很多情况下可以互换使用</p>
+<p><strong>环境变量</strong>是操作系统中的一个变量</p>
+<p><strong>用户环境变量</strong>是特定于某个用户的环境变量,每个用户都有自己的配置文件</p>
+</blockquote>
+<p>定义在 <code>~/.profile</code>的脚本文件之中，而这个脚本文件存在于<strong>主目录</strong>之中</p>
+<blockquote>
+<p><strong>主目录</strong> 和 <strong>根目录</strong> 的区别：</p>
+<p>主目录是在 <code>/home/username</code> 之下的目录</p>
+<p>根目录是 <code>/</code>开头的目录</p>
+</blockquote>
+<p>在主目录下使用：<code>ls -la</code></p>
+<blockquote>
+<p>在Linux下，以<code>。</code>开头的文件为<strong>隐藏文件</strong></p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">root@i:/home/echin<span class="comment"># ls -la</span></span><br><span class="line">total 52</span><br><span class="line">drwxr-x--- 3 echin echin  4096 May 30 20:22 .</span><br><span class="line">drwxr-xr-x 9 root  root   4096 May 30 18:13 ..</span><br><span class="line">-rw-rw-r-- 1 echin echin   264 May 30 13:09 aaa.tar.gz</span><br><span class="line">-rw------- 1 echin echin   967 May 30 13:44 .bash_history</span><br><span class="line">-rw-r--r-- 1 echin echin   220 May 29 16:37 .bash_logout</span><br><span class="line">-rw-r--r-- 1 echin echin  3771 May 29 16:37 .bashrc</span><br><span class="line">-rwxr-xr-x 1 root  root     46 May 30 20:22 hello.py</span><br><span class="line">-rwxr-xr-x 1 root  root     29 May 30 20:07 hello.sh</span><br><span class="line">lrwxrwxrwx 1 echin echin     5 May 30 17:17 <span class="built_in">link</span> -&gt; world</span><br><span class="line">-rw-r--r-- 1 echin echin   807 May 29 16:37 .profile <span class="comment"># 这里</span></span><br><span class="line">drwxrwxr-x 4 echin echin  4096 May 30 13:03 world</span><br><span class="line">-rw-rw-r-- 1 echin echin 10240 May 30 12:56 xxx.tar</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>nano .profile</code> 进入编辑</p>
+<p><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/image-20240530210747336.png" alt="image-20240530210747336"></p>
+<p>然后进入编辑…..</p>
+<p>编辑好后一定要<strong>注销用户</strong>后才能生效</p>
+<h4><span id="系统环境变量">系统环境变量</span><a href="#系统环境变量" class="header-anchor">#</a></h4><p>定义在 <code>/etc/profile</code> 的脚本文件中，这里的环境变量对 <strong>所有用户</strong> 有效</p>
+<p><code>touch /etc/profile.d/myprofile.sh</code></p>
+<p><code>nano /etc/profile.d/myprofile.sh</code></p>
+<p>写一点命令就行了</p>
+<blockquote>
+<p>但是 ， 一般来说不直接修改 &#96;&#96;&#x2F;etc&#x2F;profile&#96;</p>
+<p>而是在<code> /etc/profile.d/</code>创建一个自定义的脚本，因为<code>ect/profile</code>中会嵌套调用前者</p>
+</blockquote>
+<blockquote>
+<p>系统配置文件和初始化脚本都是放在<code>etc</code>目录下面的，且这个目录必须需要超级用户修改</p>
+</blockquote>
+<h4><span id="path-环境变量">PATH 环境变量</span><a href="#path-环境变量" class="header-anchor">#</a></h4><blockquote>
+<p>PATH 一定要大写； 修改<code>PATH</code>的时候与等号要贴贴，结构为 <code>PATH=$PATH:</code></p>
+</blockquote>
+<p>先看一段代码：</p>
+<p>为什么会找不到&#96;&#96;hello.sh&#96;这个脚本文件，明明他是存在的</p>
+<p>或者说我们是根据什么来找的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@i:/home/echin<span class="comment"># cd /home/echin</span></span><br><span class="line">root@i:/home/echin<span class="comment"># ls -l</span></span><br><span class="line">total 28</span><br><span class="line">-rw-rw-r-- 1 echin echin   264 May 30 13:09 aaa.tar.gz</span><br><span class="line">-rwxr-xr-x 1 root  root     46 May 30 20:22 hello.py</span><br><span class="line">-rwxr-xr-x 1 root  root     29 May 30 20:07 hello.sh</span><br><span class="line">lrwxrwxrwx 1 echin echin     5 May 30 17:17 <span class="built_in">link</span> -&gt; world</span><br><span class="line">drwxrwxr-x 4 echin echin  4096 May 30 13:03 world</span><br><span class="line">-rw-rw-r-- 1 echin echin 10240 May 30 12:56 xxx.tar</span><br><span class="line">root@i:/home/echin<span class="comment"># hello.sh</span></span><br><span class="line">hello.sh: <span class="built_in">command</span> not found</span><br></pre></td></tr></table></figure>
+
+<p><code>PATH</code> 环境变量 是用来描述 <strong>可执行程序的搜索路径</strong> (注意要全大写)</p>
+<blockquote>
+<p>就是执行一个程序的是否，系统会从一个路径下面来搜索</p>
+</blockquote>
+<p><strong>显示PATH 环境变量</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$path</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@i:/<span class="comment"># echo $PATH</span></span><br><span class="line">/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bi</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p> 同时多个路径之间用冒号分隔</p>
+<p><code>usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin</code></p>
+<p><code>usr/bin</code>是普通用户，<code>usr/sbin</code>是超级用户</p>
+</blockquote>
+<p>所以，我们可以明白，当我们使用<code>hello.sh</code>的时候会从<code>PATH</code>的一堆目录中寻找，但是这堆目录中并没有找到我们要的脚本文件，所以我们需要写路径才能执行</p>
+<p>解决方案：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@iZbp19bvr4g3vqr24ft07rZ:/<span class="comment"># nano /etc/profile.d/myprofile.sh</span></span><br></pre></td></tr></table></figure>
+
+<p>编辑环境变量</p>
+<p><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/image-20240530213839012.png" alt="xx"></p>
+<p>再注销后登录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@i:~<span class="comment"># hello.sh</span></span><br><span class="line">hello,world</span><br></pre></td></tr></table></figure>
+
+<p>完成了❤️</p>
+<h4><span id="小事故">小事故</span><a href="#小事故" class="header-anchor">#</a></h4><p>因为我一开始并没有创建 <code>myprofile.sh</code> 这个文件，所以我刚刚在添加路径的时候好像直接把命令修改在了 <code>.profile</code> 文件里了，导致我直接所有路径都没有了，哈哈哈</p>
+<p>解决方法是：</p>
+<ol>
+<li><p>设置临时 PATH</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/bin:/usr/bin:/sbin:/usr/sbin:/opt/bin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编辑相应的文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano ~/.profile</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加之前的路径</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>=<span class="built_in">export</span> PATH=/bin:/usr/bin:/sbin:/usr/sbin:/opt/bin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>最后测试是否成功</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>再来进行我们的修改路径的操作：</p>
+<p><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/image-20240530220730566.png" alt="image-20240530220730566"></p>
+</li>
+<li><p>成功啦💕💕💕💕💕</p>
+</li>
+</ol>
+<h4><span id="总结">总结</span><a href="#总结" class="header-anchor">#</a></h4><ol>
+<li><p>不同的环境变量的路径不一样</p>
+<ul>
+<li>用户环境变量： <code>~/.profile</code></li>
+<li>系统环境变量：<ul>
+<li>如果要自定义： <code>/etc/prfile.d/myprofile.sh</code></li>
+<li>总的系统环境变量： <code>/etc/profile</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>PATH</code> 环境变量其实是属于前面两个环境变量之中的，所以不要把他独立出来，要处理<code>PATH</code>环境变量的时候也需要再对应的文件中处理，不过如果只是临时设置的话就无所谓，直接<code>export PATH..</code></p>
+</li>
+<li><p><code>PATH</code> 一定要大写</p>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Echin-h</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/05/30/ubuntu-2/">http://example.com/2024/05/30/ubuntu-2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Echin の 博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a></div><div class="post_share"><div class="social-share" data-image="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/05/29/%E8%87%AA%E5%AE%9A%E4%B9%89github-profile/" title="自定义github_profile"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">自定义github_profile</div></div></a></div><div class="next-post pull-right"><a href="/2024/05/30/ubuntu-3/" title="ubuntu-3"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">ubuntu-3</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/05/29/ubuntu-1/" title="ubuntu-1"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-29</div><div class="title">ubuntu-1</div></div></a></div><div><a href="/2024/05/30/ubuntu-3/" title="ubuntu-3"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-30</div><div class="title">ubuntu-3</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Echin-h</div><div class="author-info__description">keep learning</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">120</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">34</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">33</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Echin-h" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://mail.qq.com/cgi-bin/frame_html?sid=vYYzrbDEaqDZEhl8&amp;r=0505616c4ef48760cb44f616432dfbd8&amp;lang=zh" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">love is accumulated, not love, too.</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">Ubuntu学习笔记2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.1.</span> <span class="toc-text">用户管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.1.1.</span> <span class="toc-text">切换用户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.1.2.</span> <span class="toc-text">添加用户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.1.3.</span> <span class="toc-text">修改用户密码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.1.4.</span> <span class="toc-text">删除用户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.1.5.</span> <span class="toc-text">推出</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.2.</span> <span class="toc-text">用户和组(不用着重了解)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.2.1.</span> <span class="toc-text">创建组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.2.2.</span> <span class="toc-text">创建用户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.2.3.</span> <span class="toc-text">修改用户信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.2.4.</span> <span class="toc-text">查看用户和组</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.3.</span> <span class="toc-text">文件权限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.3.1.</span> <span class="toc-text">查看权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.3.2.</span> <span class="toc-text">权限字符的详解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.3.3.</span> <span class="toc-text">修改文件的权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.3.4.</span> <span class="toc-text">修改文件的属主</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.4.</span> <span class="toc-text">可执行脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.4.1.</span> <span class="toc-text">Shell 脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.4.2.</span> <span class="toc-text">Python 脚本</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.5.</span> <span class="toc-text">环境变量</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.5.1.</span> <span class="toc-text">- 创建&#x2F;修改环境变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.5.2.</span> <span class="toc-text">- 显示所有环境变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.5.3.</span> <span class="toc-text">- 刷新环境变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.5.4.</span> <span class="toc-text">用户环境变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.5.5.</span> <span class="toc-text">系统环境变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.5.6.</span> <span class="toc-text">PATH 环境变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.5.7.</span> <span class="toc-text">小事故</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.5.8.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/30/ubuntu-3/" title="ubuntu-3">ubuntu-3</a><time datetime="2024-05-30T14:28:27.000Z" title="发表于 2024-05-30 22:28:27">2024-05-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/30/ubuntu-2/" title="unbuntu-2">unbuntu-2</a><time datetime="2024-05-30T09:27:26.000Z" title="发表于 2024-05-30 17:27:26">2024-05-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/29/%E8%87%AA%E5%AE%9A%E4%B9%89github-profile/" title="自定义github_profile">自定义github_profile</a><time datetime="2024-05-29T06:18:15.000Z" title="发表于 2024-05-29 14:18:15">2024-05-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/29/ubuntu-1/" title="ubuntu-1">ubuntu-1</a><time datetime="2024-05-28T16:00:43.000Z" title="发表于 2024-05-29 00:00:43">2024-05-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/28/%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/" title="自动化部署">自动化部署</a><time datetime="2024-05-28T13:53:50.000Z" title="发表于 2024-05-28 21:53:50">2024-05-28</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E9%BB%91%E8%89%B2.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Echin-h</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">today is a beautiful day</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>
