@@ -1,0 +1,248 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>configMap | Echin の 博客</title><meta name="author" content="Echin-h"><meta name="copyright" content="Echin-h"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="直接看帮助 创建 configMap#1kubectl create cm -h    # configMap &#x3D; cm   12345678910111213141516171819Examples:  # Create a new config map named my-config based on folder bar  kubectl create configmap my-config">
+<meta property="og:type" content="article">
+<meta property="og:title" content="configMap">
+<meta property="og:url" content="http://example.com/2024/07/10/configMap/index.html">
+<meta property="og:site_name" content="Echin の 博客">
+<meta property="og:description" content="直接看帮助 创建 configMap#1kubectl create cm -h    # configMap &#x3D; cm   12345678910111213141516171819Examples:  # Create a new config map named my-config based on folder bar  kubectl create configmap my-config">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg">
+<meta property="article:published_time" content="2024-07-10T13:01:39.000Z">
+<meta property="article:modified_time" content="2024-07-10T14:41:47.705Z">
+<meta property="article:author" content="Echin-h">
+<meta property="article:tag" content="k8s">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg"><link rel="shortcut icon" href="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg"><link rel="canonical" href="http://example.com/2024/07/10/configMap/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"TQQRJ72W3Y","apiKey":"691b279e3e99ecf664b63c47582168b7","indexName":"hexo","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Echin-h","link":"链接: ","source":"来源: Echin の 博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'configMap',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-10 22:41:47'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.0.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">141</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">38</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">37</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/todo/"><i class="fa-fw fas fa-list-alt"></i><span> ToDo</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/contact/"><i class="fa-fw fas fa-comments"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Echin の 博客"><span class="site-name">Echin の 博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/todo/"><i class="fa-fw fas fa-list-alt"></i><span> ToDo</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/contact/"><i class="fa-fw fas fa-comments"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">configMap</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-10T13:01:39.000Z" title="发表于 2024-07-10 21:01:39">2024-07-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-10T14:41:47.705Z" title="更新于 2024-07-10 22:41:47">2024-07-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/k8s/">k8s</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="configMap"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>直接看帮助</p>
+<h2><span id="创建-configmap">创建 configMap</span><a href="#创建-configmap" class="header-anchor">#</a></h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create cm -h    <span class="comment"># configMap = cm </span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Examples:</span><br><span class="line">  <span class="comment"># Create a new config map named my-config based on folder bar</span></span><br><span class="line">  kubectl create configmap my-config --from-file=path/to/bar</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Create a new config map named my-config with specified keys instead of file</span></span><br><span class="line">basenames on disk</span><br><span class="line">  kubectl create configmap my-config --from-file=key1=/path/to/bar/file1.txt</span><br><span class="line">--from-file=key2=/path/to/bar/file2.txt</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Create a new config map named my-config with key1=config1 and key2=config2</span></span><br><span class="line">  kubectl create configmap my-config --from-literal=key1=config1</span><br><span class="line">--from-literal=key2=config2</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Create a new config map named my-config from the key=value pairs in the file</span></span><br><span class="line">  kubectl create configmap my-config --from-file=path/to/bar</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Create a new config map named my-config from an env file</span></span><br><span class="line">  kubectl create configmap my-config --from-env-file=path/to/foo.env</span><br><span class="line">--from-env-file=path/to/bar.env</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>Based on folder bar</strong></p>
+<p><strong>基于指定的目录来创建 configMap</strong></p>
+<p>现在我的目录是 <code>/home/echin/config</code></p>
+<p>下面创建几个配置：</p>
+<p><code>/home/echin/config/test/db.properties</code>:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username=root</span><br><span class="line">password=admin</span><br></pre></td></tr></table></figure>
+
+<p><code>/home/echin/config/test/redis.properties</code>:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">host:localhost</span><br><span class="line">port:6379</span><br></pre></td></tr></table></figure>
+
+<p>然后在 <code>/home/echin/config</code> 目录下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">hhhyc@hhhyc:~/config$ sudo  kubectl create configmap test-dir-config --from-file=</span><br><span class="line"><span class="built_in">test</span>/</span><br><span class="line">configmap/test-dir-config created</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看有哪些配置文件</span></span><br><span class="line">hhhyc@hhhyc:~/config$ sudo kubectl get cm</span><br><span class="line">NAME               DATA   AGE</span><br><span class="line">kube-root-ca.crt   1      3d20h   <span class="comment"># 这个是证书</span></span><br><span class="line">test-dir-config    2      8s</span><br><span class="line"></span><br><span class="line"><span class="comment"># 详细查看配置文件中的信息</span></span><br><span class="line">hhhyc@hhhyc:~/config$ sudo kubectl describe cm  test-dir-config</span><br><span class="line">Name:         test-dir-config</span><br><span class="line">Namespace:    default</span><br><span class="line">Labels:       &lt;none&gt;</span><br><span class="line">Annotations:  &lt;none&gt;</span><br><span class="line"></span><br><span class="line">Data</span><br><span class="line">====</span><br><span class="line">db.properties:</span><br><span class="line">----</span><br><span class="line">username=root</span><br><span class="line">password=admin</span><br><span class="line"></span><br><span class="line">redis.properties:</span><br><span class="line">----</span><br><span class="line">host:127.0.0.1</span><br><span class="line">port:6379</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">BinaryData</span><br><span class="line">====</span><br><span class="line"></span><br><span class="line">Events:  &lt;none&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p><strong>Based on files</strong></p>
+<p><strong>基于指定的文件创建 configMap</strong></p>
+<p>同上</p>
+<p><strong>配置文件：</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">System:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">&#x27;test-app&#x27;</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8080</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>命令：</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">hhhyc@hhhyc:~/config$ vim application.yaml</span><br><span class="line">hhhyc@hhhyc:~/config$ sudo kubectl create cm config-app-yaml --from-file=application.yaml</span><br><span class="line">configmap/config-app-yaml created</span><br><span class="line">hhhyc@hhhyc:~/config$ sudo kubectl get cm</span><br><span class="line">NAME               DATA   AGE</span><br><span class="line">config-app-yaml    1      13s</span><br><span class="line">kube-root-ca.crt   1      3d21h</span><br><span class="line">test-dir-config    2      10m</span><br><span class="line">hhhyc@hhhyc:~/config$ sudo kubectl describe cm config-app-yaml</span><br><span class="line">Name:         config-app-yaml</span><br><span class="line">Namespace:    default</span><br><span class="line">Labels:       &lt;none&gt;</span><br><span class="line">Annotations:  &lt;none&gt;</span><br><span class="line"></span><br><span class="line">Data</span><br><span class="line">====</span><br><span class="line">application.yaml:</span><br><span class="line">----</span><br><span class="line">System:</span><br><span class="line">  application:</span><br><span class="line">    name: <span class="string">&#x27;test-app&#x27;</span></span><br><span class="line">server:</span><br><span class="line">  port: 8080</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">BinaryData</span><br><span class="line">====</span><br><span class="line"></span><br><span class="line">Events:  &lt;none&gt;</span><br></pre></td></tr></table></figure>
+
+<p>但是 我上面的 example 中明明命令中 是有一个 key1 这个选项的：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">hhhyc@hhhyc:~/config$ sudo kubectl create cm try-yaml --from-file=app.yaml=application.yaml</span><br><span class="line">configmap/try-yaml created</span><br><span class="line">hhhyc@hhhyc:~/config$ sudo kubectl describe cm try-yaml</span><br><span class="line">Name:         try-yaml</span><br><span class="line">Namespace:    default</span><br><span class="line">Labels:       &lt;none&gt;</span><br><span class="line">Annotations:  &lt;none&gt;</span><br><span class="line"></span><br><span class="line">Data</span><br><span class="line">====</span><br><span class="line">app.yaml:     <span class="comment"># ****&amp;$$$ 可以看出这里变成了 app.yaml 而不是上面的 application.yaml</span></span><br><span class="line">----</span><br><span class="line">System:</span><br><span class="line">  application:</span><br><span class="line">    name: <span class="string">&#x27;test-app&#x27;</span></span><br><span class="line">server:</span><br><span class="line">  port: 8080</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">BinaryData</span><br><span class="line">====</span><br><span class="line"></span><br><span class="line">Events:  &lt;none&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其他方法不常用，因此不写了，懒得学</p>
+</li>
+</ul>
+<h2><span id="使用-configmap">使用 configMap</span><a href="#使用-configmap" class="header-anchor">#</a></h2><ul>
+<li><p><strong>单个值的导入</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">	<span class="attr">name:</span> <span class="string">env</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">	<span class="attr">containers:</span></span><br><span class="line">	<span class="bullet">-</span> <span class="attr">name:</span> <span class="string">evn</span></span><br><span class="line">	  <span class="attr">image:</span> <span class="string">alpine</span></span><br><span class="line">	  <span class="attr">restartPolicy:</span> <span class="string">always</span></span><br><span class="line">	  <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br><span class="line">	  <span class="attr">env:</span></span><br><span class="line">	  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">GO_ENV_OPTS</span></span><br><span class="line">	    <span class="attr">valueFrom:</span></span><br><span class="line">	    	<span class="attr">configMapKeyRef:</span></span><br><span class="line">	    		<span class="attr">name:</span> <span class="string">test-env-config</span></span><br><span class="line">	    		<span class="attr">key:</span> <span class="string">GO_ENV_USERNAME</span></span><br><span class="line">	  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">APP</span></span><br><span class="line">      	<span class="attr">valueFrom:</span></span><br><span class="line">      		<span class="attr">configMapKeyRef:</span></span><br><span class="line">      			<span class="attr">name:</span> <span class="string">test-env-config</span></span><br><span class="line">      			<span class="attr">key:</span> <span class="string">GO_ENV_PASSWORD</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">.............</span>			</span><br></pre></td></tr></table></figure>
+
+<p>除了说麻烦还是麻烦，但还是得说怎么写</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">GO_ENV_OPTS</span>    <span class="comment"># 容器中环境变量的 key</span></span><br><span class="line">	    <span class="attr">valueFrom:</span>  <span class="comment"># 容器中环境变量的 value 来自哪里</span></span><br><span class="line">	    	<span class="attr">configMapKeyRef:</span>   <span class="comment"># 依赖</span></span><br><span class="line">	    		<span class="attr">name:</span> <span class="string">test-env-config</span>   <span class="comment"># 这个configMap文件中</span></span><br><span class="line">	    		<span class="attr">key:</span> <span class="string">GO_ENV_USERNAME</span>    <span class="comment"># 这个configMap文件中的这个key</span></span><br></pre></td></tr></table></figure>
+
+<p>直接 <code>kubectl create -f xx.yaml</code> 就可以应用了</p>
+<p>差不多这么理解</p>
+</li>
+<li><p><strong>数据卷挂载</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">	<span class="attr">name:</span> <span class="string">env</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">	<span class="attr">containers:</span></span><br><span class="line">	<span class="bullet">-</span> <span class="attr">name:</span> <span class="string">evn</span></span><br><span class="line">	  <span class="attr">image:</span> <span class="string">alpine</span></span><br><span class="line">	  <span class="attr">restartPolicy:</span> <span class="string">always</span></span><br><span class="line">	  <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br><span class="line">	<span class="attr">volumeMounts:</span> <span class="comment"># 加载数据卷</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">config-volume</span>  <span class="comment"># 表示加载 volumes 属性中的哪个数据卷，因为有可能有多个 volumes</span></span><br><span class="line">      <span class="attr">mountPath:</span> <span class="string">&quot;/user/local/mysql/conf&quot;</span>  <span class="comment"># 想要讲数据卷中的文件加载到哪个目录下</span></span><br><span class="line">      <span class="attr">readOnly:</span> <span class="literal">true</span> <span class="comment"># 只能读</span></span><br><span class="line">	<span class="attr">volumes:</span> <span class="comment"># 通过数据卷 挂载 configMap,secret</span></span><br><span class="line">	<span class="bullet">-</span> <span class="attr">name:</span> <span class="string">config-volume</span>  <span class="comment"># 数据卷的名字，随便设置</span></span><br><span class="line">	  <span class="attr">configMap:</span>   <span class="comment"># 数据卷的类型为 configMap</span></span><br><span class="line">	  	<span class="attr">name:</span> <span class="string">config-app-yaml</span>  <span class="comment"># configMap 的名字，必须和要加载的configMap的名字相同</span></span><br><span class="line">	  	<span class="attr">items:</span>   <span class="comment"># 对 configMap 中的 key 进行映射，如果不指定默认所有key进行转换</span></span><br><span class="line">	  	<span class="bullet">-</span> <span class="attr">key:</span> <span class="string">&quot;db.properties&quot;</span>  <span class="comment"># configMap中的key</span></span><br><span class="line">	  	  <span class="attr">path:</span> <span class="string">&quot;db.properites&quot;</span> <span class="comment"># 将该key转化为文件</span></span><br></pre></td></tr></table></figure>
+
+<p>虽然可能有点绕，梳理一下就是：</p>
+<ul>
+<li><p>使用哪些 configMap 及 key</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">configMap:</span>   </span><br><span class="line">	  	<span class="attr">name:</span> <span class="string">config-app-yaml</span>  </span><br><span class="line">	  	<span class="attr">items:</span></span><br><span class="line">	  	<span class="bullet">-</span> <span class="attr">key:</span> <span class="string">&quot;db.properties&quot;</span></span><br><span class="line">	  	  <span class="attr">path:</span> <span class="string">&quot;db.properites&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>就是这里的声明，这里声明了要用什么 configMap 以及 这个 configMap 中的什么 key</p>
+</li>
+<li><p>定义有哪些数据卷</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">volumes:</span><br><span class="line">	- name: config-volume</span><br><span class="line">	  configMap:</span><br><span class="line">	  	name: config-app-yaml </span><br><span class="line">	  	items:</span><br><span class="line">	  	- key: &quot;db.properties&quot;</span><br><span class="line">	  	  path: &quot;db.properites&quot; </span><br><span class="line">	- name: config-volume1</span><br><span class="line">	  configMap:</span><br><span class="line">	  	name: config-app-yaml </span><br><span class="line">	  	items:</span><br><span class="line">	  	- key: &quot;redis.properties&quot;</span><br><span class="line">	  	  path: &quot;redis.properites&quot;   	  </span><br></pre></td></tr></table></figure>
+
+<p>这里声明一个 数据卷 挂载着 这么多 configMap，像商品一样挑选</p>
+</li>
+<li><p>Docker 加载 数据卷</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">containers:</span><br><span class="line">	- name: evn</span><br><span class="line">	  image: alpine</span><br><span class="line">	volumeMounts:</span><br><span class="line">    - name: xxxx</span><br><span class="line">      mountPath: &quot;/user/local/mysql/conf&quot;  # 想要讲数据卷中的文件加载到哪个目录下</span><br><span class="line">      readOnly: true # 只能读</span><br><span class="line">	volumes:</span><br><span class="line">	 - name: xxxx</span><br><span class="line">	volumes:</span><br><span class="line">     - name: ssss</span><br></pre></td></tr></table></figure>
+
+<p>这里声明一个 docker 可以加载多个数据卷，并把这些数据卷的加载数据 存放在 path 下</p>
+</li>
+</ul>
+<blockquote>
+<p>Docker 可以加载多个数据卷，数据卷可以映射到多个 configMap</p>
+</blockquote>
+<p>然后直接 <code>kubectl create -f xxx.yaml</code> 创建即可</p>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Echin-h</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/07/10/configMap/">http://example.com/2024/07/10/configMap/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Echin の 博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/k8s/">k8s</a></div><div class="post_share"><div class="social-share" data-image="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2024/07/10/Ingress/" title="Ingress"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Ingress</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/07/07/k8s%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E4%B8%8E%E7%BB%84%E4%BB%B6/" title="k8s集群架构与组件"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-07</div><div class="title">k8s集群架构与组件</div></div></a></div><div><a href="/2024/07/08/Termius%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5aliyun/" title="Termius远程连接aliyun"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-08</div><div class="title">Termius远程连接aliyun</div></div></a></div><div><a href="/2024/07/07/k8s%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" title="k8s核心概念"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-07</div><div class="title">k8s核心概念</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Echin-h</div><div class="author-info__description">keep learning</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">141</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">38</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">37</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Echin-h" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://mail.qq.com/cgi-bin/frame_html?sid=vYYzrbDEaqDZEhl8&amp;r=0505616c4ef48760cb44f616432dfbd8&amp;lang=zh" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">love is accumulated, not love, too.</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">创建 configMap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">使用 configMap</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/10/configMap/" title="configMap">configMap</a><time datetime="2024-07-10T13:01:39.000Z" title="发表于 2024-07-10 21:01:39">2024-07-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/10/Ingress/" title="Ingress">Ingress</a><time datetime="2024-07-10T09:06:35.000Z" title="发表于 2024-07-10 17:06:35">2024-07-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/10/Service/" title="Service">Service</a><time datetime="2024-07-10T05:51:14.000Z" title="发表于 2024-07-10 13:51:14">2024-07-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/10/DaemonSet/" title="DaemonSet">DaemonSet</a><time datetime="2024-07-10T05:17:47.000Z" title="发表于 2024-07-10 13:17:47">2024-07-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/10/%E5%88%9D%E8%AF%86Vue/" title="初识Vue">初识Vue</a><time datetime="2024-07-09T16:44:41.000Z" title="发表于 2024-07-10 00:44:41">2024-07-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E9%BB%91%E8%89%B2.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Echin-h</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">today is a beautiful day</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>
