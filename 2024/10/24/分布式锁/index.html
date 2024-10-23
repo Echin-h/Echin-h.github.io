@@ -1,0 +1,262 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>分布式锁 | Echin の 博客</title><meta name="author" content="Echin-h"><meta name="copyright" content="Echin-h"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="场景#现在有一个场景：   我们需要在pinnacle中跑定时任务来关闭未关闭的房间以及进行plan状态的轮转  如果只有一个机器下，我使用下面这个代码来执行操作，看起来是没什么问题的  12345678wg.Add(1)for _ , plan range plans &#123;	go func()&#123;        closePlan()        wg.Done()    &amp;#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式锁">
+<meta property="og:url" content="http://example.com/2024/10/24/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/index.html">
+<meta property="og:site_name" content="Echin の 博客">
+<meta property="og:description" content="场景#现在有一个场景：   我们需要在pinnacle中跑定时任务来关闭未关闭的房间以及进行plan状态的轮转  如果只有一个机器下，我使用下面这个代码来执行操作，看起来是没什么问题的  12345678wg.Add(1)for _ , plan range plans &#123;	go func()&#123;        closePlan()        wg.Done()    &amp;#">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg">
+<meta property="article:published_time" content="2024-10-23T17:32:21.000Z">
+<meta property="article:modified_time" content="2024-10-23T18:29:30.370Z">
+<meta property="article:author" content="Echin-h">
+<meta property="article:tag" content="分布式锁">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg"><link rel="shortcut icon" href="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg"><link rel="canonical" href="http://example.com/2024/10/24/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"TQQRJ72W3Y","apiKey":"691b279e3e99ecf664b63c47582168b7","indexName":"hexo","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Echin-h","link":"链接: ","source":"来源: Echin の 博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '分布式锁',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-24 02:29:30'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.0.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">169</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">43</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">42</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/todo/"><i class="fa-fw fas fa-list-alt"></i><span> ToDo</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/contact/"><i class="fa-fw fas fa-comments"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Echin の 博客"><span class="site-name">Echin の 博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/todo/"><i class="fa-fw fas fa-list-alt"></i><span> ToDo</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/contact/"><i class="fa-fw fas fa-comments"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">分布式锁</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-23T17:32:21.000Z" title="发表于 2024-10-24 01:32:21">2024-10-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-23T18:29:30.370Z" title="更新于 2024-10-24 02:29:30">2024-10-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="分布式锁"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2><span id="场景">场景</span><a href="#场景" class="header-anchor">#</a></h2><p>现在有一个场景：</p>
+<blockquote>
+<p> 我们需要在pinnacle中跑<strong>定时任务</strong>来关闭未关闭的房间以及进行plan状态的轮转</p>
+</blockquote>
+<p>如果只有一个机器下，我使用下面这个代码来执行操作，看起来是没什么问题的 </p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">wg.Add(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">for</span> _ , plan <span class="keyword">range</span> plans &#123;</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span>&#123;</span><br><span class="line">        closePlan()</span><br><span class="line">        wg.Done()</span><br><span class="line">    &#125;()</span><br><span class="line">&#125;</span><br><span class="line">wg.Wait()</span><br></pre></td></tr></table></figure>
+
+<p>但是如果我们有多个 replicas 那么，假设有 replicas：5，那么有可能每个副本机器会同时来执行关闭closePlan的操作，这样子带来的结果就是数据库中表数据的不一致性以及其他方面的不一致性，严重灾难！</p>
+<p>因此我们需要使用分布式锁来保证一个定时任务<strong>在一段时间内</strong>只能<strong>由一个机器</strong>来执行这个定时任务</p>
+<p>也就是在多实例情况下实现单实例操作</p>
+<p>说人话：上厕所，一个坑位只能上一个人，这个人上的时候其他人都得等着</p>
+<h2><span id="思考过程">思考过程</span><a href="#思考过程" class="header-anchor">#</a></h2><p>ok ，那么我们来一步步推导分布式锁的书写逻辑</p>
+<ol>
+<li><h4><span id="我们如何保证在一段时间内只能由一个机器来执行"><strong>我们如何保证在一段时间内只能由一个机器来执行</strong>？</span><a href="#我们如何保证在一段时间内只能由一个机器来执行" class="header-anchor">#</a></h4></li>
+</ol>
+<p>我们可以上锁，这里使用了最简单的redis 实现的分布式锁</p>
+<p>我们可以将 某个定时任务的唯一uid(可辨认的) 放到redis上，如果redis上有这个uid存在了，就说明坑位满了</p>
+<p>这里的唯一 uid 是用来区分这个定时任务与其他定时任务的，机器副本都能够共同识别认可的</p>
+<p>比如在定时任务中，我们可以用 key &#x3D; corn + planId 来表示这个唯一 uid</p>
+<p>注意这里的锁是抽象概念的锁，这里的锁并不是特殊值golang中 <code>mutex.Lock</code> 这种锁，而是指能达到锁的效果的目的手段</p>
+<p>再理解一下，机器副本相当于不同的顾客，而redis相当一个权威的购物平台，而plan就相当于一个个商店，商店将自己的信息上交给redis，然后不同的顾客就可以通过这些信息辨别商家</p>
+<ol start="2">
+<li><h4><span id="简单流程"><strong>简单流程</strong>：</span><a href="#简单流程" class="header-anchor">#</a></h4></li>
+</ol>
+<p>我们需要给一个特定的定时任务创建一个  id</p>
+<p>比如说 机器A要跑定时任务的时候，先从 redis 中检查 redis.Get(“id”) 是否存在</p>
+<p>如果存在就说明这个定时任务已经上锁了，程序直接return，如果不存在，那么我们就需要在 redis.Set(“id”) 上一个锁，表示自己占用了这个定时任务</p>
+<p>然后当这个任务完成的时候，我们会将这个锁释放掉 ：redis.del(“id”)</p>
+<p>以上就是最简单的分布式锁场景</p>
+<ol start="3">
+<li><h4><span id="深入一下如果机器a在运行的过程中直接panic了而分布式锁没有删除应该怎么解决"><strong>深入一下，如果机器A在运行的过程中直接panic了，而分布式锁没有删除应该怎么解决？</strong></span><a href="#深入一下如果机器a在运行的过程中直接panic了而分布式锁没有删除应该怎么解决" class="header-anchor">#</a></h4></li>
+</ol>
+<p>如果分布式锁没有删除，就会导致这个锁永远地留在了redis中，那么其他的机器也无法跑通这个定时任务，这就糟糕了！</p>
+<p>那么处理方法就是：给这个锁加上 EX&#x2F;PX（expireTime）过期时间（EX是秒，PX是毫秒），当副本直接 panic后，锁到期后会直接删除，这样子下一个锁就可以直接运行定时任务了</p>
+<p>一般来说锁的设定时间要稍微大于 这个定时任务的的运行时间</p>
+<p>比如说一个运行时间为1s，我们就可以设置为3秒5秒</p>
+<ol start="4">
+<li><h4><span id="再深入思考一下现在我们已经设置了过期时间机器b检查锁已经没了以后开始运行定时任务并重新上锁而这个时候机器a跑完了流程就会把redis中机器b上的分布式锁删掉这可怎么办"><strong>再深入思考一下，现在我们已经设置了过期时间，机器B检查锁已经没了以后开始运行定时任务并重新上锁，而这个时候机器A跑完了流程，就会把redis中机器B上的分布式锁删掉，这可怎么办？</strong></span><a href="#再深入思考一下现在我们已经设置了过期时间机器b检查锁已经没了以后开始运行定时任务并重新上锁而这个时候机器a跑完了流程就会把redis中机器b上的分布式锁删掉这可怎么办" class="header-anchor">#</a></h4></li>
+</ol>
+<p>我们需要解决的就是机器A删除不了机器B上的锁，也就是给锁贴一个 create_user_id 这个标签</p>
+<p>主要实现形式是机器B可以 set（”id”,”ValueB”）来告知机器A，这个锁是老子加的，你没有权限删除他，对就是这么张狂</p>
+<ol start="5">
+<li><h4><span id="问题其实还是存在着的比如说在a的锁已经过期了b开始运行定时任务的这一段时间中定时任务被两个实例调用太危险了"><strong>问题其实还是存在着的，比如说在A的锁已经过期了，B开始运行定时任务的这一段时间中，定时任务被两个实例调用，太危险了</strong></span><a href="#问题其实还是存在着的比如说在a的锁已经过期了b开始运行定时任务的这一段时间中定时任务被两个实例调用太危险了" class="header-anchor">#</a></h4><ol>
+<li>我们需要尽可能的保证 定时任务操作的原子性，比如说数据库事务的原子性就很nice</li>
+<li>我们可以从源头上掐灭，不让机器A的分布式锁过期，即引入一个协程来监听机器A的是否完成任务，如果没有完成，则再追加时间；至于如果机器A一直在执行任务，那就是代码写的有问题了</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>注：看到这我们需要注意，分布式锁并不是指定时任务每个任务只执行一次，而是指在多实例环境下，每段执行时间中，只有一个单实例执行任务。</p>
+<p>所以这个任务可以执行多次，至于执行多次后可能产生的后果我们需要在代码中通过流程著名</p>
+</blockquote>
+<h2><span id="代码逻辑">代码逻辑</span><a href="#代码逻辑" class="header-anchor">#</a></h2><p>分布式锁很简单，总的来说就三步</p>
+<ol>
+<li>检验是否有锁存在</li>
+<li>如果没有加锁 ； 如果有 return</li>
+<li>释放锁</li>
+</ol>
+<p>但是redis是单线程的，事实上我们的操作一和操作二是不能分离的，要实现redis中的原子性，我们就需要实现LUA脚本：</p>
+<ol>
+<li>检验是否有锁-&gt; 上锁 or return</li>
+<li>释放锁</li>
+</ol>
+<p>下面是代码实现</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">	randomLen       = <span class="number">16</span></span><br><span class="line">	tolerance       = <span class="number">500</span> <span class="comment">// milliseconds</span></span><br><span class="line">	millisPerSecond = <span class="number">1000</span></span><br><span class="line">	lockCommand     = <span class="string">`if redis.call(&quot;GET&quot;, KEYS[1]) == ARGV[1] then</span></span><br><span class="line"><span class="string">    redis.call(&quot;SET&quot;, KEYS[1], ARGV[1], &quot;PX&quot;, ARGV[2])</span></span><br><span class="line"><span class="string">    return &quot;OK&quot;</span></span><br><span class="line"><span class="string">else</span></span><br><span class="line"><span class="string">    return redis.call(&quot;SET&quot;, KEYS[1], ARGV[1], &quot;NX&quot;, &quot;PX&quot;, ARGV[2])   </span></span><br><span class="line"><span class="string">end`</span></span><br><span class="line">	delCommand = <span class="string">`if redis.call(&quot;GET&quot;, KEYS[1]) == ARGV[1] then</span></span><br><span class="line"><span class="string">    return redis.call(&quot;DEL&quot;, KEYS[1])</span></span><br><span class="line"><span class="string">else</span></span><br><span class="line"><span class="string">    return 0</span></span><br><span class="line"><span class="string">end`</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// A RedisLock is a redis lock.</span></span><br><span class="line"><span class="keyword">type</span> RedisLock <span class="keyword">struct</span> &#123;</span><br><span class="line">	store   *Redis</span><br><span class="line">	seconds <span class="type">uint32</span></span><br><span class="line">	key     <span class="type">string</span></span><br><span class="line">	id      <span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	rand.Seed(time.Now().UnixNano())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// NewRedisLock returns a RedisLock.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewRedisLock</span><span class="params">(store *Redis, key <span class="type">string</span>)</span></span> *RedisLock &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;RedisLock&#123;</span><br><span class="line">		store: store,</span><br><span class="line">		key:   key,</span><br><span class="line">		id:    stringx.Randn(randomLen),</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Acquire acquires the lock.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rl *RedisLock)</span></span> Acquire() (<span class="type">bool</span>, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> rl.AcquireCtx(context.Background())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// AcquireCtx acquires the lock with the given ctx.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rl *RedisLock)</span></span> AcquireCtx(ctx context.Context) (<span class="type">bool</span>, <span class="type">error</span>) &#123;</span><br><span class="line">	seconds := atomic.LoadUint32(&amp;rl.seconds)</span><br><span class="line">	resp, err := rl.store.EvalCtx(ctx, lockCommand, []<span class="type">string</span>&#123;rl.key&#125;, []<span class="type">string</span>&#123;</span><br><span class="line">		rl.id, strconv.Itoa(<span class="type">int</span>(seconds)*millisPerSecond + tolerance),</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">if</span> err == red.Nil &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>, <span class="literal">nil</span></span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		logx.Errorf(<span class="string">&quot;Error on acquiring lock for %s, %s&quot;</span>, rl.key, err.Error())</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>, err</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> resp == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	reply, ok := resp.(<span class="type">string</span>)</span><br><span class="line">	<span class="keyword">if</span> ok &amp;&amp; reply == <span class="string">&quot;OK&quot;</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	logx.Errorf(<span class="string">&quot;Unknown reply when acquiring lock for %s: %v&quot;</span>, rl.key, resp)</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Release releases the lock.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rl *RedisLock)</span></span> Release() (<span class="type">bool</span>, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> rl.ReleaseCtx(context.Background())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ReleaseCtx releases the lock with the given ctx.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rl *RedisLock)</span></span> ReleaseCtx(ctx context.Context) (<span class="type">bool</span>, <span class="type">error</span>) &#123;</span><br><span class="line">	resp, err := rl.store.EvalCtx(ctx, delCommand, []<span class="type">string</span>&#123;rl.key&#125;, []<span class="type">string</span>&#123;rl.id&#125;)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	reply, ok := resp.(<span class="type">int64</span>)</span><br><span class="line">	<span class="keyword">if</span> !ok &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> reply == <span class="number">1</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SetExpire sets the expiration.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rl *RedisLock)</span></span> SetExpire(seconds <span class="type">int</span>) &#123;</span><br><span class="line">	atomic.StoreUint32(&amp;rl.seconds, <span class="type">uint32</span>(seconds))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">	lockCommand     = <span class="string">`if redis.call(&quot;GET&quot;, KEYS[1]) == ARGV[1] </span></span><br><span class="line"><span class="string">else</span></span><br><span class="line"><span class="string">    return redis.call(&quot;SET&quot;, KEYS[1], ARGV[1], &quot;NX&quot;, &quot;PX&quot;, ARGV[2])   </span></span><br><span class="line"><span class="string">end`</span></span><br></pre></td></tr></table></figure>
+
+<p><code>if redis.call(&quot;GET&quot;, KEYS[1]) == ARGV[1]</code> ARGV[1]表示机器的唯一值，这是来验证是否是该机器上的锁</p>
+<p><code>else return redis.call(&quot;SET&quot;, KEYS[1], ARGV[1], &quot;NX&quot;, &quot;PX&quot;, ARGV[2])  </code>  如果不是则上锁</p>
+<p><code>ARGV[1]</code> 签名机器自身唯一值，<code>NX</code> 表示 <code>if not exist</code> <code>PX ARGV[2]</code> 表示过期时间，<code>ARGV[2]</code>是过期时间</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">	delCommand = <span class="string">`if redis.call(&quot;GET&quot;, KEYS[1]) == ARGV[1] then</span></span><br><span class="line"><span class="string">    return redis.call(&quot;DEL&quot;, KEYS[1])</span></span><br><span class="line"><span class="string">else</span></span><br><span class="line"><span class="string">    return 0</span></span><br><span class="line"><span class="string">end`</span></span><br></pre></td></tr></table></figure>
+
+<p>简单来说就是 如果这是自己上的锁，那么删了（前提是已经执行完毕）</p>
+<ul>
+<li>Release() 释放锁</li>
+<li>AcquireCtx 获取锁</li>
+<li>SetExpire() 设置过期时间</li>
+<li>NewRedisLock() 新建锁</li>
+</ul>
+<p>在我们的定时任务中就这么写：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PlanCorn</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ctx := context.Background()</span><br><span class="line">	newCtx, cancel := context.WithCancel(ctx)</span><br><span class="line">	<span class="keyword">defer</span> cancel()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">type</span> ongoingPlan <span class="keyword">struct</span> &#123;</span><br><span class="line">		model.Plan</span><br><span class="line">		QuestionCount <span class="type">int</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">var</span> plans []*ongoingPlan</span><br><span class="line">	err := dao.Plan.DB().WithContext(ctx).Model(&amp;model.Plan&#123;&#125;).</span><br><span class="line">		Select(<span class="string">&quot;plans.*,knowledge_bases.question_count AS question_count&quot;</span>).</span><br><span class="line">		Joins(<span class="string">&quot;LEFT JOIN knowledge_bases ON plans.knowledge_base_id = knowledge_bases.id&quot;</span>).</span><br><span class="line">		Where(<span class="string">&quot;plans.status = ?&quot;</span>, model.Ongoing).Find(&amp;plans).Error</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		logx.Error(err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	cache := kernel.Kernel.MainCache</span><br><span class="line"></span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;, <span class="number">5</span>)</span><br><span class="line">	wg := sync.WaitGroup&#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> _, p := <span class="keyword">range</span> plans &#123;</span><br><span class="line">		ch &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">		wg.Add(<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(plan *ongoingPlan)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">defer</span> wg.Done()</span><br><span class="line">			<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">				<span class="keyword">if</span> r := <span class="built_in">recover</span>(); r != <span class="literal">nil</span> &#123;</span><br><span class="line">					logx.Error(fmt.Sprintf(<span class="string">&quot;panic: %v&quot;</span>, r))</span><br><span class="line">				&#125;</span><br><span class="line">				&lt;-ch</span><br><span class="line">			&#125;()</span><br><span class="line"></span><br><span class="line">			lock := rds.NewRedisLock(cache, rds.Key(<span class="string">&quot;PlanCorn&quot;</span>,plan.Id))</span><br><span class="line">			lock.SetExpire(<span class="number">3</span>)</span><br><span class="line">			<span class="keyword">defer</span> lock.ReleaseCtx(newCtx)</span><br><span class="line"></span><br><span class="line">			<span class="comment">// 1. 关闭房间</span></span><br><span class="line">			tx := dao.Plan.DB().WithContext(newCtx).Begin()</span><br><span class="line">			<span class="keyword">defer</span> tx.Rollback()</span><br><span class="line">			ok := ClosePlanRoom(tx, &amp;plan.Plan)</span><br><span class="line">			<span class="keyword">if</span> !ok &#123;</span><br><span class="line">				tx.Rollback()</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> err = tx.Commit().Error; err != <span class="literal">nil</span> &#123;</span><br><span class="line">				logx.Error(err)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">		&#125;(p)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	wg.Wait()</span><br><span class="line"></span><br><span class="line">	logx.Info(time.Now().Format(<span class="string">&quot;2006-01-02&quot;</span>) + <span class="string">&quot; PlanCorn done success&quot;</span>)</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码很简单，但也要理解一下里面的细节</p>
+<p><code>rds.Key(&quot;PlanCorn&quot;,plan.Id)</code> 用来表示这是哪个定时任务上的锁</p>
+<p><code>defer lock.ReleaseCtx(newCtx)</code> 细节 <code>defer</code></p>
+<h2><span id="总结">总结</span><a href="#总结" class="header-anchor">#</a></h2><p>感谢老板，以上的所有见解都是老板教的，本人今天半夜突然长脑子了…………..</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Echin-h</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/10/24/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">http://example.com/2024/10/24/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Echin の 博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁</a></div><div class="post_share"><div class="social-share" data-image="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2024/10/10/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0regex/" title="重新学习regex"><img class="cover" src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">重新学习regex</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E5%9F%83%E7%BD%97%E8%8A%92%E9%98%BF%E8%80%81%E5%B8%88.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Echin-h</div><div class="author-info__description">keep learning</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">169</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">43</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">42</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Echin-h" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://mail.qq.com/cgi-bin/frame_html?sid=vYYzrbDEaqDZEhl8&amp;r=0505616c4ef48760cb44f616432dfbd8&amp;lang=zh" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">love is accumulated, not love, too.</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">思考过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">2.0.1.</span> <span class="toc-text">我们如何保证在一段时间内只能由一个机器来执行？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">2.0.2.</span> <span class="toc-text">简单流程：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">2.0.3.</span> <span class="toc-text">深入一下，如果机器A在运行的过程中直接panic了，而分布式锁没有删除应该怎么解决？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">2.0.4.</span> <span class="toc-text">再深入思考一下，现在我们已经设置了过期时间，机器B检查锁已经没了以后开始运行定时任务并重新上锁，而这个时候机器A跑完了流程，就会把redis中机器B上的分布式锁删掉，这可怎么办？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">2.0.5.</span> <span class="toc-text">问题其实还是存在着的，比如说在A的锁已经过期了，B开始运行定时任务的这一段时间中，定时任务被两个实例调用，太危险了</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">代码逻辑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/24/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" title="分布式锁">分布式锁</a><time datetime="2024-10-23T17:32:21.000Z" title="发表于 2024-10-24 01:32:21">2024-10-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/10/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0regex/" title="重新学习regex">重新学习regex</a><time datetime="2024-10-10T15:05:12.000Z" title="发表于 2024-10-10 23:05:12">2024-10-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/08/%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8/" title="链表">链表</a><time datetime="2024-10-08T03:49:42.000Z" title="发表于 2024-10-08 11:49:42">2024-10-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/05/%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/" title="开闭原则">开闭原则</a><time datetime="2024-10-05T13:59:00.000Z" title="发表于 2024-10-05 21:59:00">2024-10-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/05/%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/" title="单一职责原则">单一职责原则</a><time datetime="2024-10-05T13:18:21.000Z" title="发表于 2024-10-05 21:18:21">2024-10-05</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://echin-h.oss-cn-hangzhou.aliyuncs.com/img/%E9%BB%91%E8%89%B2.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Echin-h</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">today is a beautiful day</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>
